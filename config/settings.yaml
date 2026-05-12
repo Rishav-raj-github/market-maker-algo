@@ -1,0 +1,25 @@
+app:
+  name: "HFT-MMS"
+  environment: "production"
+  tick_size: 0.01
+
+exchange:
+  fix_gateway:
+    host: "127.0.0.1"
+    port: 9876
+    sender_comp_id: "HFT_ALGO"
+    target_comp_id: "EXCHANGE"
+  binance:
+    api_key: "YOUR_API_KEY"
+    api_secret: "YOUR_API_SECRET"
+
+risk:
+  max_position: 100.0
+  max_drawdown_usd: 5000.0
+  fat_finger_limit: 50.0
+
+strategy:
+  avellaneda_stoikov:
+    gamma: 0.1
+    sigma: 0.05
+    k: 1.5
