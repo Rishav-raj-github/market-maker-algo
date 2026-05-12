@@ -8,8 +8,8 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# Shared memory/state mock
-bot_state = {
+# Shared memory/state for the trading engine
+engine_state = {
     "status": "RUNNING",
     "inventory": {"BTC": 1.5, "USD": 50000.0},
     "realized_pnl": 1250.50,
@@ -24,8 +24,8 @@ class RiskLimitUpdate(BaseModel):
 @app.get("/api/v1/status")
 async def get_status():
     """Returns real-time status of the trading engine."""
-    bot_state["uptime_seconds"] = int(time.time() - start_time)
-    return bot_state
+    engine_state["uptime_seconds"] = int(time.time() - start_time)
+    return engine_state
 
 @app.post("/api/v1/risk")
 async def update_risk_limits(limits: RiskLimitUpdate):
@@ -37,5 +37,5 @@ async def update_risk_limits(limits: RiskLimitUpdate):
 @app.post("/api/v1/kill-switch")
 async def emergency_kill():
     """Immediately halts trading and cancels all active orders."""
-    bot_state["status"] = "HALTED"
+    engine_state["status"] = "HALTED"
     return {"message": "EMERGENCY HALT EXECUTED. All orders cancelled."}
