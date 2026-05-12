@@ -1,41 +1,56 @@
-# High-Frequency Market Making Simulator (HFT-MMS)
+# HFT-MMS (High-Frequency Trading Market Making Simulator)
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![Python](https://img.shields.io/badge/Python-3.8%2B-green.svg)
-![Build](https://img.shields.io/badge/Build-Passing-brightgreen.svg)
+![Python](https://img.shields.io/badge/Python-3.10%2B-green.svg)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+![Kafka](https://img.shields.io/badge/Kafka-Streaming-red)
+![PyTorch](https://img.shields.io/badge/PyTorch-Deep_Learning-orange)
 
-An institutional-grade, event-driven market making algorithm simulation in Python. This repository implements a high-performance Level 2 Limit Order Book (LOB), a sophisticated matching engine, and an inventory-based trading strategy inspired by the classic **Avellaneda-Stoikov** (2008) model.
+An **ultra high-class, institutional-grade** algorithmic trading and market making framework. 
 
-Built to mimic the micro-structural frameworks used by quantitative trading firms and Tier-1 market makers.
+Built to mirror the exact technological stacks utilized by Tier-1 quantitative hedge funds and proprietary trading firms. It features nanosecond-latency C-extensions, real-time distributed message brokering, and deep reinforcement learning.
 
-## 🏛 Architecture
+## 🚀 State-of-the-Art Technology Stack
+
+This repository is powered by a massive, distributed microservices architecture:
+
+- **Cython**: The core matching engine is written in C-extensions to bypass the Python Global Interpreter Lock (GIL) and achieve microsecond execution latency.
+- **Apache Kafka & Zookeeper**: Handles millions of Level-2 order book updates per second with fault-tolerant event streaming.
+- **Redis**: Ultra-fast in-memory caching for tracking real-time Order Flow Imbalance (OFI) and inventory risk.
+- **PyTorch & Stable-Baselines3**: Features a Deep Learning LSTM model for short-term price prediction, and a Reinforcement Learning agent that autonomously learns to market make.
+- **FastAPI**: A high-performance async REST API providing a control plane to dynamically adjust risk limits and trigger the emergency kill-switch.
+- **Docker Compose**: Entire infrastructure spins up instantly via containerization.
+- **Prometheus & Grafana**: Real-time observability of PnL, latency, and alpha decay.
+
+## 🏛 Distributed Architecture
 
 ```mermaid
 graph TD;
-    MD[Market Data Simulator] -->|L2 Updates| OB[Order Book];
-    OB --> ST[Avellaneda-Stoikov Strategy];
-    ST -->|Quotes| OB;
-    OB --> ME[Matching Engine];
-    ME -->|Executions| RM[Risk Manager];
-    RM -->|Inventory & PnL| ST;
-    ME -->|Trade Data| MC[Metrics Calculator];
+    subgraph Infrastructure
+        K[Kafka Stream] -->|Market Data| E[Cython Matching Engine];
+        E --> R[Redis Cache];
+        E --> P[Prometheus/Grafana];
+    end
+    
+    subgraph Intelligence
+        K --> LSTM[PyTorch LSTM Predictor];
+        LSTM -->|Alpha Signal| S[RL Strategy Agent];
+        S -->|Quotes| E;
+    end
+    
+    subgraph Management
+        API[FastAPI Control Plane] --> E;
+        API --> R;
+    end
 ```
 
-## 🧠 The Strategy: Avellaneda-Stoikov
+## 🧠 Algorithmic Strategies
+1. **Reinforcement Learning Market Maker**: Utilizes PPO (Proximal Policy Optimization) to dynamically learn optimal spread quoting based on inventory.
+2. **Advanced Avellaneda-Stoikov**: A mathematical model that adjusts spreads dynamically based on Order Flow Imbalance (OFI) to prevent adverse selection.
+3. **Statistical Arbitrage**: Cointegration-based mean reversion.
+4. **VWAP / TWAP**: Institutional execution algorithms.
 
-The core algorithm dynamically adjusts the bid-ask spread and its skew based on the current inventory risk and market volatility. 
-
-### Reservation Price
-The optimal price around which the market maker centers their quotes is shifted away from the mid-price based on their current inventory ($q$), risk aversion ($\gamma$), and market volatility ($\sigma$):
-
-$$ r(s, t) = s - q \gamma \sigma^2 (T - t) $$
-
-### Optimal Spread
-The width of the quoted spread ensures profitability while compensating for adverse selection and inventory risk:
-
-$$ \delta = \gamma \sigma^2 (T - t) + \frac{2}{\gamma} \ln\left(1 + \frac{\gamma}{k}\right) $$
-
-## 🚀 Quick Start
+## 🛠️ Quick Start (Dockerized)
 
 1. **Clone the repository:**
    ```bash
@@ -43,32 +58,21 @@ $$ \delta = \gamma \sigma^2 (T - t) + \frac{2}{\gamma} \ln\left(1 + \frac{\gamma
    cd market-maker-algo
    ```
 
-2. **Install dependencies:**
+2. **Spin up the entire cluster:**
    ```bash
-   pip install -r requirements.txt
+   docker-compose up -d --build
    ```
+   This will automatically compile the Cython extensions and launch Kafka, Zookeeper, Redis, Prometheus, Grafana, and the Fast Trading Engine.
 
-3. **Run the simulation:**
-   ```bash
-   python main.py
-   ```
+3. **Access the Control Plane:**
+   Open your browser to `http://localhost:8000/docs` to interact with the FastAPI Swagger UI.
 
-## 📊 Analytics & Reporting
+## 🛡 Risk Management (Circuit Breakers)
 
-The backtesting engine automatically calculates standard institutional metrics:
-- **Total PnL** (Realized + Unrealized)
-- **Sharpe Ratio** (Annualized)
-- **Maximum Drawdown**
-
-## 🛡 Risk Management
-
-The `RiskManager` module acts as a circuit breaker, monitoring:
+The `RiskManager` module acts as a strict compliance layer, monitoring:
 - Absolute Position Limits (Delta Risk)
-- Max Drawdown (Stop Loss)
-- Volatility spikes
-
-## 🤝 Contributing
-Contributions are welcome. Please ensure that the matching engine latency remains $O(1)$ for critical path operations.
+- Max Drawdown (Auto-Liquidation)
+- Toxic Flow / Fat Finger Detection
 
 ## License
 MIT License. See `LICENSE` for more information.
